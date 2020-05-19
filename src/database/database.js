@@ -126,7 +126,7 @@ const queryAllUser = () =>
     //     reject(error);
     //   });
   });
-const queryAllTodoList = () =>
+export const queryAllTodoList = () =>
   new Promise((resolve, reject) => {
     Realm.open(databaseOptions).then(realm => {
       let allTodoListObject = realm.objects(TODOLIST_SCHEMA);

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,29 +13,41 @@ import {
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import colors from '../config/Colors';
-import tempData from '../model/tempData';
+// import tempData from '../model/tempData';
 import TodoList from '../components/TodoList';
 import AddListModal from '../components/AddListModal';
+import {queryAllTodoList} from '../database/database';
 
 const HomeScreen = ({navigation}) => {
-  const {colors} = useTheme();
-  const theme = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
+  let [state, setState] = useState({modalVisible: false, todos: []});
+
+  useEffect(() => {
+    queryAllTodoList().then(todos => {
+      console.log(JSON.stringify(todos));
+      setState(preSate => ({...preSate, todos: todos}));
+    });
+    return () => {};
+  }, []);
 
   const renderList = list => {
     return <TodoList list={list} />;
   };
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle={'dark-content'} />
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={state.modalVisible}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
         }}>
-        <AddListModal closeModal={() => setModalVisible(false)} />
+        <AddListModal
+          closeModal={() =>
+            setState(preSate => ({...preSate, modalVisible: false}))
+          }
+        />
       </Modal>
       <View style={{flexDirection: 'row'}}>
         <View style={styles.divider} />
@@ -48,15 +60,17 @@ const HomeScreen = ({navigation}) => {
       <View style={{marginVertical: 48}}>
         <TouchableOpacity
           style={styles.addList}
-          onPress={() => setModalVisible(true)}>
-          <Text style={{fontSize: 16, color: '#24A6D9'}}>+</Text>
+          onPress={() =>
+            setState(preSate => ({...preSate, modalVisible: true}))
+          }>
+          <Text style={{fontSize: 20, color: '#24A6D9'}}>+</Text>
         </TouchableOpacity>
 
         <Text style={styles.add}>Add List</Text>
       </View>
       <View style={{height: 275, paddingLeft: 32}}>
         <FlatList
-          data={tempData}
+          data={state.todos}
           keyExtractor={item => item.name}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
