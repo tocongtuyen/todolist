@@ -8,10 +8,91 @@ import {
   FlatList,
   KeyboardAvoidingView,
   TextInput,
+  Alert,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../config/Colors';
+import Swipeout from 'react-native-swipeout';
+
+let FlatListItem = props => {
+  const {
+    itemIndex,
+    id,
+    name,
+    creationDate,
+    popupDialogComponent,
+    onPressItem,
+  } = props;
+  const showEditModal = () => {
+    popupDialogComponent.showDialogComponentForUpdate({
+      id,
+      name,
+    });
+  };
+  const showDeleteConfirmation = () => {
+    Alert.alert(
+      'Delete',
+      'Delete a todoList',
+      [
+        {
+          text: 'No',
+          onPress: () => {}, //Do nothing
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => {},
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+  return (
+    <Swipeout
+      right={[
+        {
+          text: 'Edit',
+          backgroundColor: 'rgb(81,134,237)',
+          onPress: showEditModal,
+        },
+        {
+          text: 'Delete',
+          backgroundColor: 'rgb(217, 80, 64)',
+          onPress: showDeleteConfirmation,
+        },
+      ]}
+      autoClose={true}>
+      <TouchableOpacity onPress={onPressItem}>
+        <View
+          style={{
+            backgroundColor: itemIndex % 2 == 0 ? 'powderblue' : 'skyblue',
+          }}>
+          <View style={styles.todoContainer}>
+            <TouchableOpacity>
+              <Ionicons
+                name={props.completed ? 'ios-square' : 'ios-square-outline'}
+                size={24}
+                color={colors.gray}
+                style={{width: 32}}
+              />
+            </TouchableOpacity>
+            <Text
+              style={[
+                styles.todo,
+                {
+                  textDecorationLine: props.completed ? 'line-through' : 'none',
+                  color: props.completed ? colors.gray : colors.black,
+                },
+              ]}>
+              {props.name}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Swipeout>
+  );
+};
 
 export default class TodoModal extends Component {
   state = {
@@ -44,7 +125,6 @@ export default class TodoModal extends Component {
       </View>
     );
   };
-//ren
   render() {
     const taskCount = this.state.todos.length;
     const completedCount = this.state.todos.filter(todo => todo.completed)
@@ -71,7 +151,7 @@ export default class TodoModal extends Component {
         <View style={[styles.section, {flex: 3}]}>
           <FlatList
             data={this.state.todos}
-            renderItem={({item}) => this.renderTodo(item)}
+            renderItem={({item}) => FlatListItem(item)}
             keyExtractor={item => item.title}
             contentContainerStyle={{paddingHorizontal: 32, paddingVertical: 64}}
             showsVerticalScrollIndicator={false}
