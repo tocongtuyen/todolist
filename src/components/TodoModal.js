@@ -44,7 +44,7 @@ export default class TodoModal extends Component {
       </View>
     );
   };
-
+//ren
   render() {
     const taskCount = this.state.todos.length;
     const completedCount = this.state.todos.filter(todo => todo.completed)
