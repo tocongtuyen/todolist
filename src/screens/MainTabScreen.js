@@ -21,7 +21,7 @@ const MainTabScreen = () => (
       name="Home"
       component={HomeStackScreen}
       options={{
-        tabBarLabel: 'Home',
+        tabBarLabel: 'Công việc',
         tabBarColor: '#009387',
         tabBarIcon: ({color}) => (
           <Icon name="ios-home" color={color} size={26} />
@@ -32,10 +32,10 @@ const MainTabScreen = () => (
       name="Notifications"
       component={DetailsStackScreen}
       options={{
-        tabBarLabel: 'Updates',
+        tabBarLabel: 'Lịch',
         tabBarColor: '#009387',
         tabBarIcon: ({color}) => (
-          <Icon name="ios-notifications" color={color} size={26} />
+          <Icon name="ios-calendar" color={color} size={26} />
         ),
       }}
     />
@@ -43,10 +43,10 @@ const MainTabScreen = () => (
       name="Profile"
       component={ProfileScreen}
       options={{
-        tabBarLabel: 'Profile',
+        tabBarLabel: 'Tìm kiếm',
         tabBarColor: '#009387',
         tabBarIcon: ({color}) => (
-          <Icon name="ios-person" color={color} size={26} />
+          <Icon name="ios-search" color={color} size={26} />
         ),
       }}
     />
@@ -54,7 +54,7 @@ const MainTabScreen = () => (
       name="Explore"
       component={ExploreScreen}
       options={{
-        tabBarLabel: 'Explore',
+        tabBarLabel: 'Thống kê',
         tabBarColor: '#009387',
         tabBarIcon: ({color}) => (
           <Icon name="ios-aperture" color={color} size={26} />

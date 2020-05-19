@@ -180,46 +180,46 @@ export const queryAllTodoList = () =>
 //   });
 // //===========================================================
 
-// //functions for TodoLists
-// export const insertNewTodoList = newTodoList =>
-//   new Promise((resolve, reject) => {
-//     Realm.open(databaseOptions)
-//       .then(realm => {
-//         realm.write(() => {
-//           realm.create(TODOLIST_SCHEMA, newTodoList);
-//           resolve(newTodoList);
-//         });
-//       })
-//       .catch(error => reject(error));
-//   });
+//functions for TodoLists
+export const insertNewTodoList = newTodoList =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        realm.write(() => {
+          realm.create(TODOLIST_SCHEMA, newTodoList);
+          resolve(newTodoList);
+        });
+      })
+      .catch(error => reject(error));
+  });
 
-// export const updateTodoList = todoList =>
-//   new Promise((resolve, reject) => {
-//     Realm.open(databaseOptions)
-//       .then(realm => {
-//         realm.write(() => {
-//           let updatingTodoList = realm.objectForPrimaryKey(
-//             TODOLIST_SCHEMA,
-//             todoList.id,
-//           );
-//           updatingTodoList.name = todoList.name;
-//           resolve();
-//         });
-//       })
-//       .catch(error => reject(error));
-//   });
-// export const  deleteTodoList = todoListId =>
-//   new Promise((resolve, reject) => {
-//     Realm.open(databaseOptions)
-//       .then(realm => {
-//         realm.write(() => {
-//           let deletingTodoList = realm.objectForPrimaryKey(
-//             TODOLIST_SCHEMA,
-//             todoListId,
-//           );
-//           realm.delete(deletingTodoList);
-//           resolve();
-//         });
-//       })
-//       .catch(error => reject(error));
-//   });
+export const updateTodoList = todoList =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        realm.write(() => {
+          let updatingTodoList = realm.objectForPrimaryKey(
+            TODOLIST_SCHEMA,
+            todoList.id,
+          );
+          updatingTodoList.name = todoList.name;
+          resolve();
+        });
+      })
+      .catch(error => reject(error));
+  });
+export const deleteTodoList = todoListId =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        realm.write(() => {
+          let deletingTodoList = realm.objectForPrimaryKey(
+            TODOLIST_SCHEMA,
+            todoListId,
+          );
+          realm.delete(deletingTodoList);
+          resolve();
+        });
+      })
+      .catch(error => reject(error));
+  });
