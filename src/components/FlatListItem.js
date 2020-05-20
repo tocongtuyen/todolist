@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -18,6 +18,12 @@ import Swipeout from 'react-native-swipeout';
 
 let FlatListItem = props => {
   const {todo, itemIndex, popupDialogComponent, onPressItem} = props;
+  console.log(todo.name);
+
+  let [state, setState] = useState({
+    completed: todo.completed.toLocaleString(),
+    important: todo.important.toLocaleString(),
+  });
 
   const showEditModal = () => {
     popupDialogComponent.showDialogComponentForUpdate({
@@ -64,13 +70,15 @@ let FlatListItem = props => {
             backgroundColor: itemIndex % 2 == 0 ? 'powderblue' : 'skyblue',
           }}>
           <View style={styles.todoContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setState(preSate => ({
+                  ...preSate,
+                  completed: !state.completed,
+                }));
+              }}>
               <Ionicons
-                name={
-                  todo.completed.toLocaleString()
-                    ? 'ios-square-outline'
-                    : 'ios-square'
-                }
+                name={state.completed ? 'ios-square-outline' : 'ios-square'}
                 size={30}
                 color={colors.gray}
                 style={{width: 32, marginLeft: 10}}
@@ -81,28 +89,30 @@ let FlatListItem = props => {
                 style={[
                   styles.todo,
                   {
-                    textDecorationLine: todo.completed.toLocaleString()
+                    textDecorationLine: state.completed
                       ? 'none'
                       : 'line-through',
-                    color: todo.completed.toLocaleString()
-                      ? colors.black
-                      : colors.gray,
+                    color: state.completed ? colors.black : colors.gray,
                   },
                 ]}>
                 {todo.name}
               </Text>
               <Text
                 style={{
-                  color: todo.completed.toLocaleString()
-                    ? colors.black
-                    : colors.gray,
+                  color: state.completed ? colors.black : colors.gray,
                 }}>
                 {todo.timeStart.toLocaleString()}
               </Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setState(preSate => ({
+                  ...preSate,
+                  important: !state.important,
+                }));
+              }}>
               <AntDesign
-                name={todo.completed.toLocaleString() ? 'staro' : 'star'}
+                name={state.important ? 'staro' : 'star'}
                 size={30}
                 color={colors.gray}
                 style={{width: 42}}

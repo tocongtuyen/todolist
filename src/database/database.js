@@ -138,18 +138,36 @@ export const queryAllTodoList = () =>
     });
   });
 
-// export const queryAllTodoList = () =>
-//   new Promise((resolve, reject) => {
-//     Realm.open(databaseOptions)
-//       .then(realm => {
-//         let allTodoList = realm.objects(TODOLIST_SCHEMA);
-//         console.log(JSON.stringify(allTodoList));
-//         resolve(allTodoList);
-//       })
-//       .catch(error => {
-//         reject(error);
-//       });
-//   });
+export const queryAllTodo = () =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        let allTodo = realm.objects(TODO_SCHEMA);
+        console.log(JSON.stringify(allTodo));
+        resolve(allTodo);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+
+export const filterTodos = searchedText =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        let filteredTodoLists = realm
+          .objects(TODO_SCHEMA)
+          .filtered(`name CONTAINS[c] "${searchedText}"`); //[c] = case insensitive
+        let allTodo = [];
+        for (let key in filteredTodoLists) {
+          allTodo.push(filteredTodoLists[key]);
+        }
+        resolve(allTodo);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
 
 // findUserByUserName('tuyento5', 'pass1234').then(u =>
 //   console.log(JSON.stringify(u)),
@@ -223,3 +241,5 @@ export const deleteTodoList = todoListId =>
       })
       .catch(error => reject(error));
   });
+
+export default new Realm(databaseOptions);

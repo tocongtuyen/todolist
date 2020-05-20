@@ -19,7 +19,6 @@ import AddListModal from '../components/AddListModal';
 import {queryAllTodoList} from '../database/database';
 
 const HomeScreen = ({navigation}) => {
-  const [modalVisible, setModalVisible] = useState(false);
   let [state, setState] = useState({modalVisible: false, todos: []});
 
   useEffect(() => {

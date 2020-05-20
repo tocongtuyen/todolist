@@ -13,7 +13,7 @@ import PopupDialog, {
   DialogTitle,
 } from 'react-native-popup-dialog';
 //Database
-import {insertNewTodoList, updateTodoList} from '../database/database';
+import {insertNewTodoList, updateTodoList} from '../database/database.js';
 export default class PopupDialogComponent extends Component {
   constructor(props) {
     super(props);
