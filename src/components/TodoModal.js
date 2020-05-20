@@ -9,111 +9,25 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Alert,
+  Modal,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../config/Colors';
 import Swipeout from 'react-native-swipeout';
 import PopupDialogComponent from './PopupDialogComponent';
-
-let FlatListItem = props => {
-  const {todo, itemIndex, popupDialogComponent, onPressItem} = props;
-
-  console.log(todo.timeStart);
-  const showEditModal = () => {
-    popupDialogComponent.showDialogComponentForUpdate({
-      // todos.id,
-      // todos.name,
-    });
-  };
-  const showDeleteConfirmation = () => {
-    Alert.alert(
-      'Delete',
-      'Delete a todoList',
-      [
-        {
-          text: 'No',
-          onPress: () => {}, //Do nothing
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: () => {},
-        },
-      ],
-      {cancelable: true},
-    );
-  };
-  return (
-    <Swipeout
-      right={[
-        {
-          text: 'Edit',
-          backgroundColor: 'rgb(81,134,237)',
-          onPress: showEditModal,
-        },
-        {
-          text: 'Delete',
-          backgroundColor: 'rgb(217, 80, 64)',
-          onPress: showDeleteConfirmation,
-        },
-      ]}
-      autoClose={true}>
-      <TouchableOpacity onPress={onPressItem}>
-        <View
-          style={{
-            backgroundColor: itemIndex % 2 == 0 ? 'powderblue' : 'skyblue',
-          }}>
-          <View style={styles.todoContainer}>
-            <TouchableOpacity>
-              <Ionicons
-                name={
-                  todo.completed.toLocaleString()
-                    ? 'ios-square-outline'
-                    : 'ios-square'
-                }
-                size={30}
-                color={colors.gray}
-                style={{width: 32}}
-              />
-            </TouchableOpacity>
-            <View>
-              <Text
-                style={[
-                  styles.todo,
-                  {
-                    textDecorationLine: todo.completed.toLocaleString()
-                      ? 'none'
-                      : 'line-through',
-                    color: todo.completed.toLocaleString()
-                      ? colors.black
-                      : colors.gray,
-                  },
-                ]}>
-                {todo.name}
-              </Text>
-              <Text
-                style={{
-                  color: todo.completed.toLocaleString()
-                    ? colors.black
-                    : colors.gray,
-                }}>
-                {todo.timeStart.toLocaleString()}
-              </Text>
-            </View>
-          </View>
-          <Text />
-        </View>
-      </TouchableOpacity>
-    </Swipeout>
-  );
-};
+import FlatListItem from './FlatListItem.js';
 
 export default class TodoModal extends Component {
   state = {
     name: this.props.list.name,
     color: this.props.list.color,
     todos: this.props.list.todos,
+    modalVisible: false,
+  };
+
+  setModalVisible = visible => {
+    this.setState({modalVisible: visible});
   };
 
   render() {
@@ -129,6 +43,42 @@ export default class TodoModal extends Component {
 
     return (
       <SafeAreaView style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Thông tin công việc</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Enter TodoList name"
+                autoCorrect={false}
+                onChangeText={text => this.setState({name: text})}
+                value={this.state.name}
+              />
+              <View style={{flexDirection: 'row', margin: 20}}>
+                <TouchableOpacity
+                  style={{...styles.openButton, backgroundColor: '#2196F3'}}
+                  onPress={() => {
+                    this.setModalVisible(!this.state.modalVisible);
+                  }}>
+                  <Text style={styles.textStyle}>Lưu</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{...styles.openButton, backgroundColor: '#2196F3'}}
+                  onPress={() => {
+                    this.setModalVisible(!this.state.modalVisible);
+                  }}>
+                  <Text style={styles.textStyle}>Huỷ</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
         <TouchableOpacity
           style={{position: 'absolute', top: 64, right: 32, zIndex: 10}}
           onPress={this.props.closeModal}>
@@ -168,9 +118,12 @@ export default class TodoModal extends Component {
         <KeyboardAvoidingView
           style={[styles.section, styles.footer]}
           behavior="padding">
-          <TextInput style={[styles.input, {borderColor: this.state.color}]} />
+          <View style={[styles.input]} />
           <TouchableOpacity
-            style={[styles.addTodo, {backgroundColor: this.state.color}]}>
+            style={[styles.addTodo, {backgroundColor: this.state.color}]}
+            onPress={() => {
+              this.setModalVisible(!this.state.modalVisible);
+            }}>
             <AntDesign name="plus" size={16} color={colors.white} />
           </TouchableOpacity>
         </KeyboardAvoidingView>
@@ -214,19 +167,18 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 48,
-    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 6,
     marginRight: 8,
     paddingHorizontal: 8,
   },
   addTodo: {
-    borderRadius: 4,
+    borderRadius: 10,
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
   todoContainer: {
-    paddingVertical: 16,
+    paddingVertical: 18,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -234,5 +186,50 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontWeight: '700',
     fontSize: 16,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: '#F194FF',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  textInput: {
+    height: 40,
+    padding: 10,
+    margin: 10,
+    borderColor: 'gray',
+    borderWidth: 1,
   },
 });

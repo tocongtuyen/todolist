@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import colors from '../config/Colors.js';
 import tempData from '../model/tempData';
-
+import AntDesign from 'react-native-vector-icons/AntDesign';
 class AddListModal extends React.Component {
   backgroundColors = [
     '#5CD859',
@@ -54,7 +54,7 @@ class AddListModal extends React.Component {
         <TouchableOpacity
           style={{position: 'absolute', top: 64, right: 32}}
           onPress={this.props.closeModal}>
-          <Text style={({fontSize: 20}, {color: colors.black})}>X</Text>
+          <AntDesign name="close" size={24} color={colors.black} />
         </TouchableOpacity>
 
         <View style={{alignSelf: 'stretch', marginHorizontal: 32}}>
