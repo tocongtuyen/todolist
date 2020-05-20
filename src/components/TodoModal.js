@@ -17,18 +17,13 @@ import Swipeout from 'react-native-swipeout';
 import PopupDialogComponent from './PopupDialogComponent';
 
 let FlatListItem = props => {
-  const {
-    itemIndex,
-    id,
-    name,
-    timeStart,
-    popupDialogComponent,
-    onPressItem,
-  } = props;
+  const {todo, itemIndex, popupDialogComponent, onPressItem} = props;
+
+  console.log(todo.timeStart);
   const showEditModal = () => {
     popupDialogComponent.showDialogComponentForUpdate({
-      id,
-      name,
+      // todos.id,
+      // todos.name,
     });
   };
   const showDeleteConfirmation = () => {
@@ -72,24 +67,42 @@ let FlatListItem = props => {
           <View style={styles.todoContainer}>
             <TouchableOpacity>
               <Ionicons
-                name={props.completed ? 'ios-square' : 'ios-square-outline'}
-                size={24}
+                name={
+                  todo.completed.toLocaleString()
+                    ? 'ios-square-outline'
+                    : 'ios-square'
+                }
+                size={30}
                 color={colors.gray}
                 style={{width: 32}}
               />
             </TouchableOpacity>
-            <Text
-              style={[
-                styles.todo,
-                {
-                  textDecorationLine: props.completed ? 'line-through' : 'none',
-                  color: props.completed ? colors.gray : colors.black,
-                },
-              ]}>
-              {name}
-            </Text>
-            <Text>{timeStart}</Text>
+            <View>
+              <Text
+                style={[
+                  styles.todo,
+                  {
+                    textDecorationLine: todo.completed.toLocaleString()
+                      ? 'none'
+                      : 'line-through',
+                    color: todo.completed.toLocaleString()
+                      ? colors.black
+                      : colors.gray,
+                  },
+                ]}>
+                {todo.name}
+              </Text>
+              <Text
+                style={{
+                  color: todo.completed.toLocaleString()
+                    ? colors.black
+                    : colors.gray,
+                }}>
+                {todo.timeStart.toLocaleString()}
+              </Text>
+            </View>
           </View>
+          <Text />
         </View>
       </TouchableOpacity>
     </Swipeout>
@@ -104,9 +117,16 @@ export default class TodoModal extends Component {
   };
 
   render() {
+    let allTodo = [];
+    for (let key in this.state.todos) {
+      allTodo.push(this.state.todos[key]);
+    }
+    console.log(allTodo);
+
     const taskCount = this.state.todos.length;
     const completedCount = this.state.todos.filter(todo => todo.completed)
       .length;
+
     return (
       <SafeAreaView style={styles.container}>
         <TouchableOpacity
@@ -128,11 +148,14 @@ export default class TodoModal extends Component {
         </View>
         <View style={[styles.section, {flex: 3}]}>
           <FlatList
-            data={this.state.todos}
+            data={allTodo}
             renderItem={({item, index}) => (
               <FlatListItem
-                {...item}
+                todo={item}
                 itemIndex={index}
+                onPressItem={() => {
+                  alert('you pressed item');
+                }}
                 popupDialogComponent={this.refs.popupDialogComponent}
               />
             )}
@@ -140,7 +163,7 @@ export default class TodoModal extends Component {
             contentContainerStyle={{paddingHorizontal: 32, paddingVertical: 64}}
             showsVerticalScrollIndicator={false}
           />
-          <PopupDialogComponent refs={'popupDialogComponent'} />
+          <PopupDialogComponent ref={'popupDialogComponent'} />
         </View>
         <KeyboardAvoidingView
           style={[styles.section, styles.footer]}
